@@ -117,15 +117,16 @@ class Panel(QWidget):
 
         self.lineEdit = QLineEdit()
         self.textEdit = QTextEdit()
+        self.checkBox = QCheckBox('filter_startswith')
 
 
-        completer =QCompleter(json_read)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        completer.setFilterMode(Qt.MatchContains)
-        completer.popup().setFont(self.font)
-        completer.popup().setAlternatingRowColors(True)
-        completer.popup().setStyleSheet("color: rgba(144, 100, 134,255);")
-        self.lineEdit.setCompleter(completer)
+        self.completer =QCompleter(json_read)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setFilterMode(Qt.MatchContains)
+        self.completer.popup().setFont(self.font)
+        self.completer.popup().setAlternatingRowColors(True)
+        self.completer.popup().setStyleSheet("color: rgba(144, 100, 134,255);")
+        self.lineEdit.setCompleter(self.completer)
         self.lineEdit.setTextMargins(50,50,50,50)
         f = self.lineEdit.font()
         f.setPointSize(27)
@@ -139,8 +140,9 @@ class Panel(QWidget):
                                  rgba(144, 170, 134,255);")
 
         self.textEdit.setFont(f)
+        self.layout.addWidget(self.checkBox)
         self.layout.addWidget(self.lineEdit)
-        # self.layout.addWidget(self.textEdit)
+
 
         self.setLayout(self.layout)
         self.setMinimumWidth(800)
@@ -148,6 +150,7 @@ class Panel(QWidget):
         self.setWindowTitle('Nuke API Searcher')
 
         self.lineEdit.returnPressed.connect(self.lala)
+        self.checkBox.stateChanged.connect(self.comb_box_click)
 
     def lala(self):
         var = str(self.lineEdit.text()).split(' ')
@@ -176,6 +179,11 @@ class Panel(QWidget):
 
         # goog(without_bra)
 
+    def comb_box_click(self):
+        if self.checkBox.isChecked():
+            self.completer.setFilterMode(Qt.MatchStartsWith)
+        else:
+            self.completer.setFilterMode(Qt.MatchContains)
 
 
 app = QApplication(sys.argv)
@@ -183,36 +191,6 @@ panel = Panel()
 panel.show()
 sys.exit(app.exec_())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# number = 21
-# first_result = results[number]
-# print first_result.contents
-# # print first_result.contents[1].find_all('span',attrs={"class": "summary-sig-name"})
-# for i in first_result.contents:
-#     try:
-#         print str(i.find('span',attrs={"class": "summary-sig-name"}).text)
-#         if str(i.find('span',attrs={"class": "summary-sig-name"}).text).startswith(word):
-#
-#             print results[number].text
-#     except:
-#         pass
 
 
 
