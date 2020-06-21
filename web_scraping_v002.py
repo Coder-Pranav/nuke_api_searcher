@@ -81,7 +81,7 @@ def goog(word):
 def information(word):
     for ext in json_read_links:
         if ext.find(word) != -1:
-            # print ext
+            print ext
             url = 'https://learn.foundry.com/nuke/developers/70/pythonreference/{}'.format(ext)
             print url
             response = requests.get(url)
@@ -89,8 +89,15 @@ def information(word):
 
             soup = BeautifulSoup(response.text, 'html.parser')
             results = soup.find_all('td', attrs={"class": "summary"})
+
+            '''table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">'''
+
+            results = soup.find_all('table', attrs={"class": "details","border":"1", "cellspacing":"0", "width":"100%", "bgcolor":"white"})
+
             for pikachu in results:
                 if (pikachu.text.encode('utf-8')).find(word) != -1:
+                    print pikachu.text.encode('utf-8').strip()
                     return pikachu.text.encode('utf-8').strip()
 
 
@@ -117,6 +124,7 @@ class Panel(QWidget):
 
         self.lineEdit = QLineEdit()
         self.textEdit = QTextEdit()
+        self.textEdit.setWordWrapMode(QTextOption.WordWrap)
         self.checkBox = QCheckBox('filter_startswith')
 
 
@@ -139,7 +147,11 @@ class Panel(QWidget):
                                  border-color: \
                                  rgba(144, 170, 134,255);")
 
-        self.textEdit.setFont(f)
+
+        tx_font = self.lineEdit.font()
+        tx_font.setPointSize(15)
+
+        self.textEdit.setFont(tx_font)
         self.layout.addWidget(self.checkBox)
         self.layout.addWidget(self.lineEdit)
 
@@ -154,11 +166,11 @@ class Panel(QWidget):
 
     def lala(self):
         var = str(self.lineEdit.text()).split(' ')
-        # print var[0]
         try:
             without_bra = var[0].replace('()', '')
         except:
             without_bra = var[0]
+
         self.layout.addWidget(self.textEdit)
         # self.textEdit.setText(information(without_bra))
 

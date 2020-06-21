@@ -1,78 +1,24 @@
-import requests
-import urllib3.request
-import time
-from bs4 import BeautifulSoup
-import re
-import string
 import json
-
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+import sys
 
 
 with open('nk_api.json', 'r') as openfile:
     json_read = json.load(openfile)
 
-
-with open('nk_api_links_V002.json', 'r') as openfile_links:
-    json_read_links = json.load(openfile_links)
-
-
-
-def goog(word):
-    for i in json_read_links:
-        if i.find(word) != -1:
-            print i
+with open('nk_api_info.json', 'r') as openfile_links:
+    json_read_info = json.load(openfile_links)
 
 
 
-def information(word):
-    space = False
-    for dict in json_read_links:
+def nuke_info(word):
+    for i in json_read_info:
         try:
-            ext = dict[word]
-            pikachu_word = dict[word].split('#')
-            pikachu_word = pikachu_word[1]
-
-            url = 'https://learn.foundry.com/nuke/developers/70/pythonreference/{}'.format(ext)
-            print url
-
-            response = requests.get(url)
-            # print response.text
-
-            soup = BeautifulSoup(response.text, 'html.parser')
-
-            results = soup.find_all('table', attrs={"class": "details","border":"1", "cellspacing":"0", "width":"100%", "bgcolor":"white"})
-
-            ### for detailed instrruction modules/classes
-            for pikachu in results:
-                if pikachu.text.find(pikachu_word) != -1:
-                    # print type(pikachu.text)
-                    return pikachu.text.strip()
-                else:
-                    space = True
-
-
-            ### for small values for keywords and parameters
-            if space is True:
-                results = soup.find_all('td', attrs={"class": "summary"})
-                for pikachu in results:
-                    if pikachu.text.find(pikachu_word) != -1:
-                        # print type(pikachu.text)
-                        return pikachu.text.strip()
+            return i[word]
         except:
             pass
-
-
-
-
-
-
-
-
-
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-import sys
 
 class Panel(QWidget):
     def __init__(self):
@@ -131,7 +77,7 @@ class Panel(QWidget):
         self.layout.addWidget(self.textEdit)
         # self.textEdit.setText(information(without_bra))
 
-        self.textEdit.document().setPlainText(information(str(var)))
+        self.textEdit.document().setPlainText(nuke_info(var))
 
         font = self.textEdit.document().defaultFont()
         fontMetrics = QFontMetrics(font)
@@ -145,8 +91,7 @@ class Panel(QWidget):
         else:
             pass
         self.textEdit.setReadOnly(True)
-
-        # goog(without_bra)
+        self.setMaximumHeight(700)
 
     def comb_box_click(self):
         if self.checkBox.isChecked():
