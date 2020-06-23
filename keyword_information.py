@@ -20,6 +20,7 @@ def information(word):
             ext = dict[word]
             pikachu_word = dict[word].split('#')
             pikachu_word = pikachu_word[1]
+            print pikachu_word
 
             url = 'https://learn.foundry.com/nuke/developers/70/pythonreference/{}'.format(ext)
             print url
@@ -34,8 +35,8 @@ def information(word):
             ### for detailed instrruction modules/classes
             for pikachu in results:
                 if pikachu.text.find(pikachu_word) != -1:
-                    # print type(pikachu.text)
-                    return pikachu.text.strip()
+                    if pikachu.find(text=pikachu_word):
+                        return pikachu.text.strip()
                 else:
                     space = True
 
@@ -45,35 +46,40 @@ def information(word):
                 results = soup.find_all('td', attrs={"class": "summary"})
                 for pikachu in results:
                     if pikachu.text.find(pikachu_word) != -1:
-                        # print type(pikachu.text)
-                        return pikachu.text.strip()
+                        if pikachu.find(text=pikachu_word):
+                            return pikachu.text.strip()
         except:
             pass
 
-# keyword_info = []
-# for i in json_read:
-#     information(i)
-#     value = {i:information(i)}
-#     keyword_info.append(value)
+keyword_info = []
+for i in json_read:
+    # information(i)
+    value = {i:information(i)}
+    keyword_info.append(value)
+
+json_list = json.dumps(keyword_info, indent=4)
+with open('nk_api_info.json','w') as f:
+    f.write(json_list)
+
+
+
+####test
+# for dict in json_read_links:
+#     try:
+#         ext = dict["hasError() (Node)"]
+#         pikachu_word = ext.split('#')
+#         pikachu_word = pikachu_word[1]
 #
-# json_list = json.dumps(keyword_info, indent=4)
-# with open('nk_api_info.json','w') as f:
-#     f.write(json_list)
+#     except:
+#         pass
+#
+# url = 'https://learn.foundry.com/nuke/developers/70/pythonreference/{}'.format(ext)
+# # print pikachu_word
+#
+# print url
+#
+# print information("hasError() (Node)")
 
-for dict in json_read_links:
-    try:
-        ext = dict["XY_Knob (nuke)"]
-        pikachu_word = ext.split('#')
-        pikachu_word = pikachu_word[1]
 
-    except:
-        pass
-
-url = 'https://learn.foundry.com/nuke/developers/70/pythonreference/{}'.format(ext)
-print pikachu_word
-
-print url
-
-print information("XY_Knob (nuke)")
 
 # print keyword_info
